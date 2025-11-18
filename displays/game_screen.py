@@ -1,24 +1,33 @@
 import pygame
 
-pygame.init()
+from src.graph import Graph, Node
+def level_1_graph():
+    #TODO: create a level and create a structure by which coordinates can be manually assigned to the nodes
+    pass
 
-screen = pygame.display.set_mode((1280, 720))
-clock = pygame.time.Clock()
-running = True
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+def run_game():
+    lvl_1 = level_1_graph()
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
+    pygame.init()
 
-    # RENDER YOUR GAME HERE
+    screen = pygame.display.set_mode((1280, 720))
+    clock = pygame.time.Clock()
+    running = True
 
-    # flip() the display to put your work on screen
-    pygame.display.flip()
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    clock.tick(60)  # limits FPS to 60
+        # fill the screen with a color to wipe away anything from last frame
+        screen.fill("purple")
 
-pygame.quit()
+        # RENDER YOUR GAME HERE
+
+        # flip() the display to put your work on screen
+        pygame.display.flip()
+
+        clock.tick(60)  # limits FPS to 60
+
+    pygame.quit()
