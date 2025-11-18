@@ -35,7 +35,7 @@ def test_find_distance_of_node_type():
     test_graph_2.add_node(Node("RRL", "trap"))
     test_graph_2.add_edge("RR", "RRL")
 
-    trap_distance = test_graph_2.find_distance_from_node("root", "trap")
+    trap_distance = test_graph_2.find_distance_from_nearest_node_of_type("root", "trap")
     assert trap_distance == 3
 
 def run_tests():
