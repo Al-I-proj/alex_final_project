@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, node_id, data = "", trap_distance = 0, prize_distance = 0):
+    def __init__(self, node_id, data = "", trap_distance = 0, prize_distance = 0, coordinates = (-1,-1)):
         self.node_id = node_id
         self.data = data
         self.children_types = []
@@ -7,6 +7,8 @@ class Node:
         self.children = {
             "all":[]
         }
+        self.x, self.y = coordinates
+        self.coordinates = coordinates
         self.trap_distance = trap_distance
         self.prize_distance = prize_distance
     
@@ -30,9 +32,11 @@ class Graph:
 
     def add_edge(self, node_id_1, node_id_2):
         node_1 = self.nodes[node_id_1]
-        node_2 = self.nodes[node_id_2]
+        if node_id_1 in self.edges:
+            self.edges[node_id_1] += [node_id_2]
+        else:
+            self.edges[node_id_1] = [node_id_2]
 
-        self.edges[node_id_1] = node_id_1
         node_1.children_list += [node_id_2]
         
 
