@@ -101,7 +101,7 @@ def run_game():
         selected_node = player_node
         # TODO: make code to move player
         pygame.draw.circle(screen, "green", player_position, 15)
-        if keys_pressed[]
+        #if keys_pressed[]
             
             # flip() the display to put your work on screen
         pygame.display.flip()
