@@ -25,10 +25,13 @@ class Graph:
         self.nodes = {}
         self.edges = {}
         self.nodes_list = []
+        self.total_prizes = 0
 
     def add_node(self, node):
         self.nodes[node.node_id] = node
         self.nodes_list += [node.node_id]
+        if node.data == "prize":
+            self.total_prizes += 1
 
     def add_edge(self, node_id_1, node_id_2):
         node_1 = self.nodes[node_id_1]
