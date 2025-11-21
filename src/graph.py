@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, node_id, data = "", trap_distance = 0, prize_distance = 0, coordinates = (-1,-1)):
+    def __init__(self, node_id, coordinates, data = ""):
         self.node_id = node_id
         self.data = data
         self.children_types = []
@@ -9,16 +9,16 @@ class Node:
         }
         self.x, self.y = coordinates
         self.coordinates = coordinates
-        self.trap_distance = trap_distance
-        self.prize_distance = prize_distance
+        self.trap_distance = 0
+        self.prize_distance = 0
     
     def __str__(self):
         children = self.children["all"]
-        return f"({self.node_id}, {children})"
+        return f"({self.node_id}, {self.coordinates}, {children})"
     
     def __repr__(self):
         children = self.children["all"]
-        return f"({self.node_id}, {children})"
+        return f"({self.node_id}, {self.coordinates}, {children})"
 
 class Graph:
     def __init__(self):
@@ -41,7 +41,11 @@ class Graph:
             self.edges[node_id_1] = [node_id_2]
 
         node_1.children_list += [node_id_2]
-        
+    
+    def add_non_directional_edge(self, node_id_1, node_id_2):
+        self.add_edge(node_id_1, node_id_2)
+        self.add_edge(node_id_2, node_id_1)
+
 
     def find_distance_from_nearest_node_of_type(self, root_node_id, data):
         found = False
