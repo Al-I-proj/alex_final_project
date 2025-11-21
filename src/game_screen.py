@@ -66,6 +66,7 @@ def run_game():
                 visited_nodes = ["start"]
                 player_node = lvl.nodes["start"]
                 points = 0
+                prizes_found = 0
                 game_over = False
         elif next_level:
             text = title_font.render("LEVEL UP!", True, "green")
@@ -82,6 +83,8 @@ def run_game():
                 visited_nodes = ["start"]
                 player_node = lvl.nodes["start"]
                 points = 0
+                prizes_found = 0
+                next_level = False
 
         else:
             # draw the edges

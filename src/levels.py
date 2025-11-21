@@ -24,6 +24,8 @@ def level_1_graph():
 
 def level_2_graph():
     lvl_2_graph = Graph()
+    lvl_2_graph.add_node(Node("start", coordinates= (5,3)))
     #TODO: design level 2
+    
 
     return lvl_2_graph
