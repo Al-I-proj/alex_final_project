@@ -41,3 +41,41 @@ def level_2_graph():
   
 
     return lvl
+
+def level_3_graph():
+    
+    lvl = Graph()
+    lvl.add_node(Node("start", (5, 2)))
+
+    lvl.add_node(Node("top_1", (4, 1), "trap"))
+    lvl.add_node(Node("top_2", (5, 1), "prize"))
+    lvl.add_node(Node("top_3", (6, 1)))
+
+    lvl.add_non_directional_edge("start", "top_1")
+    lvl.add_non_directional_edge("start", "top_3")
+
+    lvl.add_non_directional_edge("top_2", "top_3")
+    lvl.add_non_directional_edge("top_2", "top_1")
+
+    lvl.add_node(Node("mid_1", (3, 2), "prize"))
+    lvl.add_node(Node("mid_2", (4, 2)))
+    lvl.add_node(Node("mid_3", (6, 2)))
+    lvl.add_node(Node("mid_4", (7, 2), "prize"))
+
+    lvl.add_non_directional_edge("mid_1", "mid_2")
+    lvl.add_non_directional_edge("mid_2", "start")
+    lvl.add_non_directional_edge("start", "mid_3")
+    lvl.add_non_directional_edge("mid_3", "mid_4")
+
+    lvl.add_non_directional_edge("mid_4", "top_3")
+    lvl.add_non_directional_edge("mid_1", "top_1")
+
+    lvl.add_node(Node("bottom", (5, 4), "trap"))
+    
+    lvl.add_non_directional_edge("bottom", "mid_1")
+    lvl.add_non_directional_edge("bottom", "mid_2")
+    lvl.add_non_directional_edge("bottom", "start")
+    lvl.add_non_directional_edge("bottom", "mid_3")
+    lvl.add_non_directional_edge("bottom", "mid_4")
+
+    return lvl

@@ -155,10 +155,10 @@ def select_destination_node(lvl, left, right, up, down, player_node, selected_no
             if up:
                 if len(y_ordered[0]) < 1:
                     return selected_node
-                return y_ordered[0][1]
+                return y_ordered[0][-1]
             if len(y_ordered[1]) < 1:
                 return selected_node
-            return y_ordered[1][-1]
+            return y_ordered[1][0]
         
         return selected_node
     else:
@@ -209,7 +209,7 @@ def quick_sort(unordered_list: list, by_x = False, by_y = False):
 def run_game():
     lvl = levels.level_1_graph()
     lvl_counter = 1
-    max_levels = 2
+    max_levels = 3
 
     pygame.init()
     #DONE: create system to display and interact with a graph
@@ -273,6 +273,8 @@ def run_game():
                 if keys_pressed[pygame.K_SPACE]:
                     if lvl_counter == 2:
                         lvl = levels.level_2_graph()
+                    elif lvl_counter == 3:
+                        lvl = levels.level_3_graph()
                     
                     lvl.update_trap_and_prize_distances()
                     visited_nodes = ["start"]
