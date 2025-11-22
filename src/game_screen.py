@@ -19,6 +19,8 @@ def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, node
                  points_font, points):
     # draw the edges
 
+    #TODO: add something to indicate directionality of edges
+    #TODO: add something to indicate edge weights
     for this_node_id in lvl.nodes_list:
         current_setup_node = lvl.nodes[this_node_id]
         current_setup_coordinates = pygame.Vector2(current_setup_node.x * square_size, current_setup_node.y  * square_size)
@@ -119,7 +121,8 @@ def select_destination_node(lvl, left, right, up, down, player_node, selected_no
     # a possible selection method for destination nodes on more complex graphs
 
     #TODO: fix selection glitch for diagonal edges which end at the same x/y but not the same y/x
-    #   currently the program sometimes fails to ever reach one of the nodes
+    #   currently the program sometimes fails to reach one of the nodes
+    
     if left != right or up != down:
         x_ordered = [[],[]]
         y_ordered = [[],[]]
@@ -142,20 +145,20 @@ def select_destination_node(lvl, left, right, up, down, player_node, selected_no
             if left:
                 if len(x_ordered[0]) < 1:
                     return selected_node
-                return x_ordered[0][-1]
+                return x_ordered[0][0]
             if len(x_ordered[1]) < 1:
                 return selected_node
-            return x_ordered[1][0]
+            return x_ordered[1][-1]
         
         if up or down and up != down:
             
             if up:
                 if len(y_ordered[0]) < 1:
                     return selected_node
-                return y_ordered[0][-1]
+                return y_ordered[0][1]
             if len(y_ordered[1]) < 1:
                 return selected_node
-            return y_ordered[1][0]
+            return y_ordered[1][-1]
         
         return selected_node
     else:
