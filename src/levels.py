@@ -79,3 +79,76 @@ def level_3_graph():
     lvl.add_non_directional_edge("bottom", "mid_4")
 
     return lvl
+
+def level_4_graph():
+    #Nodes on this graph have been labelled using WASD as (+y, -x, -y, +x)
+    lvl = Graph()
+
+    lvl.add_node(Node("start", (3, 3)))
+
+    lvl.add_node(Node("DW", (4, 4)))
+    lvl.add_node(Node("DS", (4, 2)))
+
+    lvl.add_edge("start", "DW")
+    lvl.add_edge("start", "DS")
+
+    lvl.add_node(Node("WW", (3, 5), "prize"))
+    
+    lvl.add_non_directional_edge("DW", "WW")
+    lvl.add_edge("WW", "start")
+    
+    lvl.add_node(Node("DD", (5, 3), "prize"))
+    lvl.add_node(Node("DDWW", (5, 5), "trap"))
+
+    lvl.add_non_directional_edge("DW", "DD")
+    lvl.add_non_directional_edge("DD", "DDWW")
+    lvl.add_edge("DDWW", "DW")
+    lvl.add_edge("DS", "DD")
+
+    return lvl
+
+def level_5_graph():
+    #Nodes on this graph have been labelled with the most direct WASD path to them
+    lvl = Graph()
+    lvl.add_node(Node("start", (5, 3)))
+
+    lvl.add_node(Node("S", (5, 2), "prize"))
+    lvl.add_node(Node("SA", (4, 2)))
+    lvl.add_node(Node("SD", (6, 2)))
+
+    lvl.add_non_directional_edge("S", "SA")
+    lvl.add_non_directional_edge("S", "SD")
+
+    lvl.add_node(Node("SAS", (4, 1), "trap"))
+    lvl.add_node(Node("SDS", (6, 1), "prize"))
+    
+    lvl.add_non_directional_edge("SD", "SDS")
+    lvl.add_non_directional_edge("SA", "SAS")
+
+    lvl.add_node(Node("W", (5, 4)))
+    lvl.add_node(Node("WA", (4, 4)))
+    lvl.add_node(Node("WD", (6, 4)))
+
+    lvl.add_non_directional_edge("W", "start")
+    lvl.add_non_directional_edge("")
+
+
+    lvl.add_node(Node("WW", (5, 5)))
+
+def make_level(level_num):
+    if level_num == 1:
+        lvl = level_1_graph()
+    elif level_num == 2:
+        lvl = level_2_graph()
+    elif level_num == 3:
+        lvl = level_3_graph()
+    elif level_num == 4:
+        lvl = level_4_graph()
+    elif level_num == 5:
+        lvl = level_5_graph()
+    else:
+        lvl = level_1_graph()
+        
+    return lvl
+
+

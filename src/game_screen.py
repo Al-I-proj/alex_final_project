@@ -21,16 +21,44 @@ def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, node
 
     #TODO: add something to indicate directionality of edges
     #TODO: add something to indicate edge weights
+    completed_edges = {
+
+    }
     for this_node_id in lvl.nodes_list:
         current_setup_node = lvl.nodes[this_node_id]
         current_setup_coordinates = pygame.Vector2(current_setup_node.x * square_size, current_setup_node.y  * square_size)
         if this_node_id in lvl.edges:
             for child in lvl.edges[this_node_id]:
-                child_coordinates = pygame.Vector2(lvl.nodes[child].x * square_size, lvl.nodes[child].y * square_size)
-                pygame.draw.line(screen, "white", 
-                                current_setup_coordinates,
-                                child_coordinates, 
-                                5)
+                already_visited = False
+                if this_node_id in completed_edges:
+                    if child in completed_edges[this_node_id]:
+                        already_visited = True
+                if not already_visited:
+                    child_coordinates = pygame.Vector2(lvl.nodes[child].x * square_size, lvl.nodes[child].y * square_size)
+                    if this_node_id in lvl.edges[child]:    
+                        pygame.draw.line(screen, "white", 
+                                        current_setup_coordinates,
+                                        child_coordinates, 
+                                        5)
+                    else:
+                        half_mark = ((child_coordinates - current_setup_coordinates)/2) + current_setup_coordinates
+                        pygame.draw.line(screen, "white", 
+                                        current_setup_coordinates,
+                                        half_mark, 
+                                        5)
+                        pygame.draw.line(screen, "red", 
+                                        half_mark,
+                                        child_coordinates, 
+                                        5)
+
+                    if this_node_id in completed_edges:
+                        completed_edges[this_node_id] += [child]
+                    else:
+                        completed_edges[this_node_id] = [child]
+                    if child in completed_edges:
+                        completed_edges[child] += [this_node_id]
+                    else:
+                        completed_edges[child] = [this_node_id]
                 
                 
 
@@ -42,12 +70,20 @@ def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, node
             color = "white"
         else:
             text = node_font.render(str(current_setup_node.trap_distance), True, "red")
+            backdrop = pygame.Rect(((current_setup_node.x * square_size) - (1.5 * text.get_size()[0]//2), 
+                                   (current_setup_node.y * square_size) + (text.get_size()[1]//2) + (node_size)),
+                                    (text.get_size()[0] * 1.5, text.get_size()[1]))
+            pygame.draw.rect(screen, "black", backdrop)
             screen.blit(text, 
                         pygame.Vector2(
                             (current_setup_node.x * square_size) - (text.get_size()[0]//2),
-                            (current_setup_node.y * square_size) + (text.get_size()[1]//2) + (node_size)
+                            (current_setup_node.y * square_size) + (text.get_size()[1]//2) + (node_size * .5)
                         ))
             text = node_font.render(str(current_setup_node.prize_distance), True, "green")
+            backdrop = pygame.Rect(((current_setup_node.x * square_size) - (1.5 * text.get_size()[0]//2), 
+                                   (current_setup_node.y * square_size) - ( text.get_size()[1]//2) - (node_size * 4)),
+                                    (text.get_size()[0] * 1.5, text.get_size()[1]))
+            pygame.draw.rect(screen, "black", backdrop)
             screen.blit(text, 
                         pygame.Vector2(
                             (current_setup_node.x * square_size) - (text.get_size()[0]//2),
@@ -86,36 +122,6 @@ def level_up_screen(screen, title_font, points_font):
     text = points_font.render("(press space to continue)", True, "white")
     center = ((screen.get_size()[0]//2) - (text.get_size()[0]//2), screen.get_size()[1]//2 - (text.get_size()[1]//2))
     screen.blit(text, pygame.Vector2(center[0], center[1] + 50))
-    
-def find_destination_node(lvl, left, right, up, down, player_node):
-    # factors used to compare with less repetatitive code using greater than comparissons
-
-    x_factor, y_factor = (0, 0)
-    if left and not right:
-        x_factor = 1
-    elif right and not left:
-        x_factor = -1
-    if down and not up:
-        y_factor = -1
-    elif up and not down:
-        y_factor = 1
-    
-    destination_node = player_node
-    for possible_node in lvl.edges[player_node.node_id]:
-        if y_factor == 0:    
-            if (lvl.nodes[possible_node].x * x_factor < player_node.x * x_factor
-                and lvl.nodes[possible_node].y == player_node.y):
-                destination_node = lvl.nodes[possible_node]
-        elif x_factor == 0:    
-            if (lvl.nodes[possible_node].y * y_factor < player_node.y * y_factor
-                and lvl.nodes[possible_node].x == player_node.x):
-                destination_node = lvl.nodes[possible_node]
-        else:
-            if (lvl.nodes[possible_node].x * x_factor < player_node.x * x_factor 
-                and lvl.nodes[possible_node].y * y_factor < player_node.y * y_factor ):
-                destination_node = lvl.nodes[possible_node]
-    return destination_node
-
 
 def select_destination_node(lvl, left, right, up, down, player_node, selected_node):
     # a possible selection method for destination nodes on more complex graphs
@@ -200,16 +206,17 @@ def quick_sort(unordered_list: list, by_x = False, by_y = False):
                 less += [entry]
     return quick_sort(less, by_x, by_y) + [pivot] + quick_sort(more, by_x, by_y)
     
+def test_level(level_num):
+    lvl = levels.make_level(level_num)
 
+    run_game(lvl, level_num, level_num)
 
 
         
 
     
-def run_game():
-    lvl = levels.level_1_graph()
-    lvl_counter = 1
-    max_levels = 3
+def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 4):
+    lvl.update_trap_and_prize_distances()
 
     pygame.init()
     #DONE: create system to display and interact with a graph
@@ -235,7 +242,6 @@ def run_game():
     title_font = pygame.font.SysFont("georgia", 48)
     game_over = False
     next_level = False
-    starting = True
 
     node_size = 10
     player_size = 15
@@ -271,10 +277,7 @@ def run_game():
                 level_up_screen(screen, title_font, points_font)
                 keys_pressed = pygame.key.get_pressed()
                 if keys_pressed[pygame.K_SPACE]:
-                    if lvl_counter == 2:
-                        lvl = levels.level_2_graph()
-                    elif lvl_counter == 3:
-                        lvl = levels.level_3_graph()
+                    lvl = levels.make_level(lvl_counter)
                     
                     lvl.update_trap_and_prize_distances()
                     visited_nodes = ["start"]
@@ -311,27 +314,6 @@ def run_game():
                     
             destination_node = player_node
             if player_node.node_id in lvl.edges:
-                # if left and not right:
-                #     #max_distance = 0
-                #         for possible_node in lvl.edges[player_node.node_id]:
-                #             if lvl.nodes[possible_node].x < player_node.x:
-                #                 destination_node = lvl.nodes[possible_node]
-                #                 #max_distance = player_node.x - lvl.nodes[possible_node].x
-                # elif right and not left:
-                #     for possible_node in lvl.edges[player_node.node_id]:
-                #         if lvl.nodes[possible_node].x > player_node.x:
-                #             destination_node = lvl.nodes[possible_node]
-                # elif up and not down:
-                #     for possible_node in lvl.edges[player_node.node_id]:
-                #         if lvl.nodes[possible_node].y > player_node.y:
-                #             destination_node = lvl.nodes[possible_node]
-                # elif down and not up:
-                #     for possible_node in lvl.edges[player_node.node_id]:
-                #         if lvl.nodes[possible_node].y < player_node.y:
-                #             destination_node = lvl.nodes[possible_node]
-
-
-                #destination_node = find_destination_node(lvl, left, right, up ,down, player_node)
                 selected_node = select_destination_node(lvl, left, right, up, down, player_node, selected_node)
                 if new_key_lift(pygame.K_SPACE, last_key_positions, keys_pressed):
                     destination_node = selected_node
@@ -362,4 +344,5 @@ def run_game():
 
     pygame.quit()
 
-run_game()
+#run_game()
+test_level(3)
