@@ -70,11 +70,15 @@ def level_3_graph():
     lvl.add_non_directional_edge("mid_4", "top_3")
     lvl.add_non_directional_edge("mid_1", "top_1")
 
+    lvl.add_node(Node("low", (5, 3)))
+
+    lvl.add_non_directional_edge("low", "start")
+
     lvl.add_node(Node("bottom", (5, 4), "trap"))
     
     lvl.add_non_directional_edge("bottom", "mid_1")
     lvl.add_non_directional_edge("bottom", "mid_2")
-    lvl.add_non_directional_edge("bottom", "start")
+    lvl.add_non_directional_edge("bottom", "low")
     lvl.add_non_directional_edge("bottom", "mid_3")
     lvl.add_non_directional_edge("bottom", "mid_4")
 
@@ -130,10 +134,11 @@ def level_5_graph():
     lvl.add_node(Node("WD", (6, 4)))
 
     lvl.add_non_directional_edge("W", "start")
-    lvl.add_non_directional_edge("")
 
 
     lvl.add_node(Node("WW", (5, 5)))
+
+    return lvl
 
 def make_level(level_num):
     if level_num == 1:
@@ -148,7 +153,7 @@ def make_level(level_num):
         lvl = level_5_graph()
     else:
         lvl = level_1_graph()
-        
+
     return lvl
 
 
