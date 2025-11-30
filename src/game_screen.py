@@ -257,7 +257,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
     FPS_limit = 60
 
     animation_counter = 0
-    animation_count_limit = FPS_limit//20
+    animation_count_limit = FPS_limit//10
     move_counter = 0
     move_limit = FPS_limit//40
     travel_speed = 1/20
@@ -423,5 +423,5 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
 
     pygame.quit()
 
-run_game()
-#test_level(3)
+#run_game()
+test_level(4)
