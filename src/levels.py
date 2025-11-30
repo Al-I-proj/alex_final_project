@@ -88,21 +88,21 @@ def level_4_graph():
     #Nodes on this graph have been labelled using WASD as (+y, -x, -y, +x)
     lvl = Graph()
 
-    lvl.add_node(Node("start", (1, 3)))
+    lvl.add_node(Node("start", (1, 2)))
 
-    lvl.add_node(Node("DW", (2, 4)))
-    lvl.add_node(Node("DS", (2, 2)))
+    lvl.add_node(Node("DW", (2, 3)))
+    lvl.add_node(Node("DS", (2, 1)))
 
     lvl.add_edge("start", "DW")
     lvl.add_edge("start", "DS")
 
-    lvl.add_node(Node("WW", (1, 5), "prize"))
+    lvl.add_node(Node("WW", (1, 4), "prize"))
     
     lvl.add_non_directional_edge("DW", "WW")
     lvl.add_edge("WW", "start")
     
-    lvl.add_node(Node("DD", (3, 3), "prize"))
-    lvl.add_node(Node("DDWW", (3, 5), "trap"))
+    lvl.add_node(Node("DD", (3, 2), "prize"))
+    lvl.add_node(Node("DDWW", (3, 4), "trap"))
 
     lvl.add_non_directional_edge("DW", "DD")
     lvl.add_non_directional_edge("DD", "DDWW")
