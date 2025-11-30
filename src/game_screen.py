@@ -376,6 +376,12 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
                         sprite_animation_file = "src/sprites/D_walk/"
                         if direction.x < 0:
                             invert = True
+                    if direction.y > 0 and abs(direction.y) > abs(direction.x):
+                        sprite_animation_file = "src/sprites/S_walk/"
+                    if direction.y < 0 and abs(direction.y) > abs(direction.x):
+                        sprite_animation_file = "src/sprites/W_walk/"
+                    
+
                     current_animation = []
                     animation_frame = 0
                     current_animation, animation_frame_limit = set_up_animation(sprite_animation_file)
@@ -431,5 +437,5 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
 
     pygame.quit()
 
-#run_game()
-test_level(4)
+run_game()
+#test_level(3)

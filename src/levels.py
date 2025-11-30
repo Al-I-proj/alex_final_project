@@ -47,9 +47,9 @@ def level_3_graph():
     lvl = Graph()
     lvl.add_node(Node("start", (5, 2)))
 
-    lvl.add_node(Node("top_1", (4, 1), "trap"))
-    lvl.add_node(Node("top_2", (5, 1), "prize"))
-    lvl.add_node(Node("top_3", (6, 1)))
+    lvl.add_node(Node("top_1", (4, 1)))
+    lvl.add_node(Node("top_2", (5, 1), "trap"))
+    lvl.add_node(Node("top_3", (6, 1), "prize"))
 
     lvl.add_non_directional_edge("start", "top_1")
     lvl.add_non_directional_edge("start", "top_3")
@@ -60,7 +60,7 @@ def level_3_graph():
     lvl.add_node(Node("mid_1", (3, 2), "prize"))
     lvl.add_node(Node("mid_2", (4, 2)))
     lvl.add_node(Node("mid_3", (6, 2)))
-    lvl.add_node(Node("mid_4", (7, 2), "prize"))
+    lvl.add_node(Node("mid_4", (7, 2), "trap"))
 
     lvl.add_non_directional_edge("mid_1", "mid_2")
     lvl.add_non_directional_edge("mid_2", "start")
