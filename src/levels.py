@@ -22,7 +22,7 @@ def level_1_graph():
 def level_2_graph():
     lvl = Graph()
     lvl.add_node(Node("start", (5,3)))
-    #TODO: design level 2
+
     lvl.add_node(Node("-1,-1", (4,2)))
     lvl.add_node(Node("1,-1", (6,2)))
 
@@ -45,11 +45,11 @@ def level_2_graph():
 def level_3_graph():
     
     lvl = Graph()
-    lvl.add_node(Node("start", (5, 2)))
+    lvl.add_node(Node("start", (3, 2)))
 
-    lvl.add_node(Node("top_1", (4, 1)))
-    lvl.add_node(Node("top_2", (5, 1), "trap"))
-    lvl.add_node(Node("top_3", (6, 1), "prize"))
+    lvl.add_node(Node("top_1", (2, 1)))
+    lvl.add_node(Node("top_2", (3, 1), "trap"))
+    lvl.add_node(Node("top_3", (4, 1), "prize"))
 
     lvl.add_non_directional_edge("start", "top_1")
     lvl.add_non_directional_edge("start", "top_3")
@@ -57,10 +57,10 @@ def level_3_graph():
     lvl.add_non_directional_edge("top_2", "top_3")
     lvl.add_non_directional_edge("top_2", "top_1")
 
-    lvl.add_node(Node("mid_1", (3, 2), "prize"))
-    lvl.add_node(Node("mid_2", (4, 2)))
-    lvl.add_node(Node("mid_3", (6, 2)))
-    lvl.add_node(Node("mid_4", (7, 2), "trap"))
+    lvl.add_node(Node("mid_1", (1, 2), "prize"))
+    lvl.add_node(Node("mid_2", (2, 2)))
+    lvl.add_node(Node("mid_3", (4, 2)))
+    lvl.add_node(Node("mid_4", (5, 2), "trap"))
 
     lvl.add_non_directional_edge("mid_1", "mid_2")
     lvl.add_non_directional_edge("mid_2", "start")
@@ -70,11 +70,11 @@ def level_3_graph():
     lvl.add_non_directional_edge("mid_4", "top_3")
     lvl.add_non_directional_edge("mid_1", "top_1")
 
-    lvl.add_node(Node("low", (5, 3)))
+    lvl.add_node(Node("low", (3, 3)))
 
     lvl.add_non_directional_edge("low", "start")
 
-    lvl.add_node(Node("bottom", (5, 4), "trap"))
+    lvl.add_node(Node("bottom", (3, 4), "trap"))
     
     lvl.add_non_directional_edge("bottom", "mid_1")
     lvl.add_non_directional_edge("bottom", "mid_2")
@@ -88,21 +88,21 @@ def level_4_graph():
     #Nodes on this graph have been labelled using WASD as (+y, -x, -y, +x)
     lvl = Graph()
 
-    lvl.add_node(Node("start", (3, 3)))
+    lvl.add_node(Node("start", (1, 3)))
 
-    lvl.add_node(Node("DW", (4, 4)))
-    lvl.add_node(Node("DS", (4, 2)))
+    lvl.add_node(Node("DW", (2, 4)))
+    lvl.add_node(Node("DS", (2, 2)))
 
     lvl.add_edge("start", "DW")
     lvl.add_edge("start", "DS")
 
-    lvl.add_node(Node("WW", (3, 5), "prize"))
+    lvl.add_node(Node("WW", (1, 5), "prize"))
     
     lvl.add_non_directional_edge("DW", "WW")
     lvl.add_edge("WW", "start")
     
-    lvl.add_node(Node("DD", (5, 3), "prize"))
-    lvl.add_node(Node("DDWW", (5, 5), "trap"))
+    lvl.add_node(Node("DD", (3, 3), "prize"))
+    lvl.add_node(Node("DDWW", (3, 5), "trap"))
 
     lvl.add_non_directional_edge("DW", "DD")
     lvl.add_non_directional_edge("DD", "DDWW")
@@ -122,6 +122,7 @@ def level_5_graph():
 
     lvl.add_non_directional_edge("S", "SA")
     lvl.add_non_directional_edge("S", "SD")
+    lvl.add_non_directional_edge("S", "start")
 
     lvl.add_node(Node("SAS", (4, 1), "trap"))
     lvl.add_node(Node("SDS", (6, 1), "prize"))
@@ -151,9 +152,36 @@ def level_5_graph():
     lvl.add_non_directional_edge("WD", "WDWD")
     
 
+    lvl.add_node(Node("WAWAW", (3, 6)))
     lvl.add_node(Node("WWAW", (4, 6), "prize"))
     lvl.add_node(Node("WWW", (5, 6)))
     lvl.add_node(Node("WWDW", (6, 6), "trap"))
+    lvl.add_node(Node("WDWDW", (7, 6)))
+
+    lvl.add_non_directional_edge("WAWAW", "WAWA")
+    lvl.add_edge("WWA","WWAW")
+    lvl.add_edge("WAWAW", "WWW")
+    lvl.add_edge("WWW", "WDWDW")
+    lvl.add_edge("WWDW", "WWD")
+    lvl.add_non_directional_edge("WDWD", "WDWDW")
+
+    lvl.add_node(Node("WWAWW", (4, 7)))
+    lvl.add_node(Node("WWDWW", (6, 7)))
+
+    lvl.add_non_directional_edge("WWAWW", "WWAW")
+    lvl.add_non_directional_edge("WWDWW", "WWDW")
+
+    lvl.add_node(Node("WAWAWWW", (3, 8)))
+    lvl.add_node(Node("WWWWWWW", (5, 8)))
+    lvl.add_node(Node("WDWDWWW", (7, 8)))
+
+    lvl.add_non_directional_edge("WAWAWWW", "WAWAW")
+    lvl.add_non_directional_edge("WAWAWWW", "WWAWW")
+    lvl.add_non_directional_edge("WWWWWWW", "WWAWW")
+    lvl.add_non_directional_edge("WWWWWWW", "WWDWW")
+    lvl.add_non_directional_edge("WDWDWWW", "WWDWW")
+    lvl.add_non_directional_edge("WDWDWWW", "WDWDW")
+
 
     return lvl
 

@@ -26,12 +26,24 @@ class Graph:
         self.edges = {}
         self.nodes_list = []
         self.total_prizes = 0
+        self.top = 0
+        self.bottom = 100
+        self.left = 100
+        self.right = 0
 
     def add_node(self, node):
         self.nodes[node.node_id] = node
         self.nodes_list += [node.node_id]
         if node.data == "prize":
             self.total_prizes += 1
+        if node.x < self.left:
+            self.left = node.x
+        if node.x > self.right:
+            self.right = node.x
+        if node.y < self.bottom:
+            self.bottom = node.y
+        if node.y > self.top:
+            self.top = node.y
 
     def add_edge(self, node_id_1, node_id_2):
         node_1 = self.nodes[node_id_1]

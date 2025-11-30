@@ -125,10 +125,7 @@ def level_up_screen(screen, title_font, points_font):
     screen.blit(text, pygame.Vector2(center[0], center[1] + 50))
 
 def select_destination_node(lvl, left, right, up, down, player_node, selected_node):
-    # a possible selection method for destination nodes on more complex graphs
-
-    #TODO: fix selection glitch for diagonal edges which end at the same x/y but not the same y/x
-    #   currently the program sometimes fails to reach one of the nodes
+    # a selection function for destination nodes
     
     if left != right or up != down:
         x_ordered = [[],[]]
@@ -228,12 +225,16 @@ def set_up_animation(animation_directory_name):
     
 def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
     lvl.update_trap_and_prize_distances()
+    if lvl.top - lvl.bottom > lvl.right - lvl.left:
+        lvl_scale = 1 / (1 + lvl.top - lvl.bottom)
+    else:
+        lvl_scale = 1 / (1 + lvl.right - lvl.left)
 
     pygame.init()
     #DONE: create system to display and interact with a graph
 
     screen = pygame.display.set_mode((1280, 720))
-    square_size = 100
+    square_size = 500 * lvl_scale
     clock = pygame.time.Clock()
     running = True
     
@@ -254,8 +255,8 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
     game_over = False
     next_level = False
 
-    node_size = 10
-    player_size = 15
+    node_size = 60 * lvl_scale
+    player_size = 90 * lvl_scale
 
     selected_node = player_node
     current_position = pygame.Vector2(player_node.x, player_node.y)
@@ -364,7 +365,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
                         selected_node = select_destination_node(lvl, left, right, up, down, player_node, selected_node)
                         if new_key_lift(pygame.K_SPACE, last_key_positions, keys_pressed):
                             destination_node = selected_node
-                #TODO: Make sprite animation code
+                #DONE: Make sprite animation code
                 #DONE: Make code to smoothly move sprite
 
                 if destination_node != player_node:
@@ -437,5 +438,5 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
 
     pygame.quit()
 
-run_game()
-#test_level(3)
+#run_game()
+test_level(5)
