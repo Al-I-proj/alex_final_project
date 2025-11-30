@@ -20,7 +20,7 @@ def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, node
                  points_font, points):
     # draw the edges
 
-    #TODO: add something to indicate directionality of edges
+    #DONE: add something to indicate directionality of edges
     #TODO: add something to indicate edge weights
     completed_edges = {
 
@@ -170,6 +170,12 @@ def select_destination_node(lvl, left, right, up, down, player_node, selected_no
         return selected_node
     else:
         return selected_node
+
+def display_player_node_data(lvl, player_node, screen, small_font):
+    prize_info = small_font.render(f"nearest prize: {player_node.prize_distance}", True, "green")
+    trap_info = small_font.render(f"nearest trap: {player_node.trap_distance}", True, "red")
+    screen.blit(prize_info, pygame.Vector2(1000, 150 + (prize_info.get_size()[1])))
+    screen.blit(trap_info, pygame.Vector2(1000, 150 + (trap_info.get_size()[1] * 2)))
 
 def quick_sort(unordered_list: list, by_x = False, by_y = False):
     if len(unordered_list) <= 1:
@@ -328,14 +334,16 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, max_levels = 5):
                                 player_size + 5)
             level_screen(lvl, screen, square_size, visited_nodes, node_font, node_size,
                          points_font, points)
+            display_player_node_data(lvl, player_node, screen, points_font)
+            
             # move player
-
 
             keys_pressed = pygame.key.get_pressed()
             # DONE: make code to move player in cardinal directions
             # DONE: make code to move the player diagonally
             sprite_image = pygame.image.load(current_animation[animation_frame])
             sprite_image = pygame.transform.scale(sprite_image, (sprite_image.get_size()[0] * sprite_scale, sprite_image.get_size()[1] * sprite_scale))
+            
             if invert:
                 sprite_image = pygame.transform.flip(sprite_image, True, False)
             screen.blit(sprite_image, (current_position * square_size) - (pygame.Vector2(sprite_image.get_size()[0], sprite_image.get_size()[1])//2))
