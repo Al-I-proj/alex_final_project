@@ -16,12 +16,14 @@ def new_key_lift(key, last_key_positions, keys_pressed):
     return False
 
 
-def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, node_size,
+def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, pixel_scale,
                  points_font, points):
     # draw the edges
 
     #DONE: add something to indicate directionality of edges
     #TODO: add something to indicate edge weights
+
+    pixel_size = pixel_scale * 32
     completed_edges = {
 
     }
@@ -40,17 +42,17 @@ def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, node
                         pygame.draw.line(screen, "white", 
                                         current_setup_coordinates,
                                         child_coordinates, 
-                                        5)
+                                        pixel_scale * 2)
                     else:
                         half_mark = ((child_coordinates - current_setup_coordinates)/2) + current_setup_coordinates
                         pygame.draw.line(screen, "white", 
                                         current_setup_coordinates,
                                         half_mark, 
-                                        5)
+                                        pixel_scale * 2)
                         pygame.draw.line(screen, "red", 
                                         half_mark,
                                         child_coordinates, 
-                                        5)
+                                        pixel_scale * 2)
 
                     if this_node_id in completed_edges:
                         completed_edges[this_node_id] += [child]
@@ -67,40 +69,45 @@ def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, node
     for this_node_id in lvl.nodes_list:
         current_setup_node = lvl.nodes[this_node_id]
         current_setup_coordinates = pygame.Vector2(current_setup_node.x * square_size, current_setup_node.y * square_size)
-        color = "white"
-        if current_setup_node.node_id not in visited_nodes:
-            color = "white"
-        else:
+
+        node_image_id = "src/assets/nodes/outlined_green_node.png"
+        
+        if current_setup_node.node_id in visited_nodes:
+
             text = node_font.render(str(current_setup_node.trap_distance), True, "red")
             backdrop = pygame.Rect((current_setup_coordinates[0] - (1.5 * text.get_size()[0]//2), 
-                                   current_setup_coordinates[1] + (text.get_size()[1]//2) + (node_size)),
+                                   current_setup_coordinates[1] + (text.get_size()[1]//2) + (pixel_size * .25)),
                                     (text.get_size()[0] * 1.5, text.get_size()[1]))
             pygame.draw.rect(screen, "black", backdrop)
             screen.blit(text, 
                         pygame.Vector2(
                             current_setup_coordinates[0] - (text.get_size()[0]//2),
-                            current_setup_coordinates[1] + (text.get_size()[1]//2) + (node_size * .5)
+                            current_setup_coordinates[1] + (text.get_size()[1]//2) + (pixel_size * .25)
                         ))
+            
             text = node_font.render(str(current_setup_node.prize_distance), True, "green")
             backdrop = pygame.Rect((current_setup_coordinates[0] - (1.5 * text.get_size()[0]//2), 
-                                   current_setup_coordinates[1] - ( text.get_size()[1]//2) - (node_size * 2.5)),
+                                   current_setup_coordinates[1] - (text.get_size()[1]//2) - (pixel_size * .5)),
                                     (text.get_size()[0] * 1.5, text.get_size()[1]))
             pygame.draw.rect(screen, "black", backdrop)
             screen.blit(text, 
                         pygame.Vector2(
                             current_setup_coordinates[0] - (text.get_size()[0]//2),
-                            current_setup_coordinates[1] - (text.get_size()[1]//2) - (node_size * 2.5)
+                            current_setup_coordinates[1] - (text.get_size()[1]//2) - (pixel_size * .5)
                         ))
 
             if current_setup_node.data == "trap":
-                color = "red"
+                node_image_id = "src/assets/nodes/outlined_red_node.png"
             elif current_setup_node.data == "prize":
-                color = "green"
+                node_image_id = "src/assets/nodes/outlined_yellow_node.png"
             else:
-                color = "gray"
-        pygame.draw.circle(screen, color, 
-                            current_setup_coordinates, 
-                            node_size)
+                node_image_id = "src/assets/nodes/outlined_gray_node.png"
+        # pygame.draw.circle(screen, color, 
+        #                     current_setup_coordinates, 
+        #                     pixel_scale)
+        node_image = pygame.image.load(node_image_id)
+        node_image = pygame.transform.scale(node_image, (node_image.get_size()[0] * pixel_scale, node_image.get_size()[1] * pixel_scale))
+        screen.blit(node_image, current_setup_coordinates - pygame.Vector2(node_image.get_size()[0]//2, node_image.get_size()[1]//2))
 
         text = points_font.render(f"Found: {points} / {lvl.total_prizes}", True, "white")
         screen.blit(text, pygame.Vector2(1000,100))
@@ -224,7 +231,8 @@ def set_up_animation(animation_directory_name):
     return (current_animation, animation_frame_limit)
 
     
-def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, level_limit = 5):
+def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 10, level_limit = 10):
+    
     lvl.update_trap_and_prize_distances()
     
     if lvl.left > 1:
@@ -247,7 +255,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
         lvl.bottom = 1
         lvl.top = topmost
 
-    if (lvl.top - lvl.bottom)*16 > (lvl.right - lvl.left)*9:
+    if (lvl.top - lvl.bottom) * 16 > (lvl.right - lvl.left) * 9:
         lvl_scale = 1 / (1 + lvl.top - lvl.bottom)
     else:
         lvl_scale = 1 / (1 + lvl.right - lvl.left)
@@ -255,11 +263,12 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
     pygame.init()
     #DONE: create system to display and interact with a graph
 
+    #TODO: set up screen with consistant pixel style graphics
     screen = pygame.display.set_mode((1280, 720))
     clock = pygame.time.Clock()
     running = True
     
-    square_size = 600 * lvl_scale
+    square_size = 640 * lvl_scale
     
     visited_nodes = ["start"]
     player_node = lvl.nodes["start"]
@@ -278,7 +287,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
     game_over = False
     next_level = False
 
-    node_size = 60 * lvl_scale
+    pixel_scale = round(12 * lvl_scale)
     player_size = 90 * lvl_scale
 
     selected_node = player_node
@@ -292,11 +301,15 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
     move_limit = FPS_limit//40
     travel_speed = 1/20
     
-    sprite_animation_file = "src/sprites/idle/"
+    sprite_animation_file = "src/assets/sprites/idle/"
     current_animation, animation_frame_limit = set_up_animation(sprite_animation_file)
     animation_frame = 0
     invert = False
-    sprite_scale = 3
+    sprite_scale = pixel_scale
+
+    selector_image = pygame.image.load("src/assets/selector_6.png")
+    selector_image = pygame.transform.scale(selector_image, (selector_image.get_size()[0] * pixel_scale, 
+                                                             selector_image.get_size()[1] * pixel_scale))
 
     death_animation = False
     testing = False
@@ -308,12 +321,18 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
                 running = False
                 
 
-        # RENDER YOUR GAME HERE
         screen.fill("black")
+        
+        keys_pressed = pygame.key.get_pressed()
+        
+        # quit if escape key is pressed (to avoid issues if exit button is inaccessible)
+        if not testing:
+            if keys_pressed[pygame.K_ESCAPE]:
+                running = False
+
         if game_over:
             game_over_screen(screen, title_font, points_font)
             
-            keys_pressed = pygame.key.get_pressed()
             if keys_pressed[pygame.K_SPACE]:
                 visited_nodes = ["start"]
                 player_node = lvl.nodes["start"]
@@ -322,7 +341,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
                 points = 0
                 prizes_found = 0
                 game_over = False
-                current_animation, animation_frame_limit = set_up_animation("src/sprites/idle/")
+                current_animation, animation_frame_limit = set_up_animation("src/assets/sprites/idle/")
                 animation_frame = 0
         elif next_level:
             if final_level < lvl_counter:
@@ -332,7 +351,6 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
 
             else:
                 level_up_screen(screen, title_font, points_font)
-                keys_pressed = pygame.key.get_pressed()
                 if keys_pressed[pygame.K_SPACE]:
                     lvl = levels.make_level(lvl_counter)
                     
@@ -340,7 +358,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
                     visited_nodes = ["start"]
                     player_node = lvl.nodes["start"]
                     current_position = pygame.Vector2(player_node.x, player_node.y)
-                    current_animation, animation_frame_limit = set_up_animation("src/sprites/idle/")
+                    current_animation, animation_frame_limit = set_up_animation("src/assets/sprites/idle/")
                     animation_frame = 0
                     selected_node = player_node
                     points = 0
@@ -354,17 +372,19 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
                 animation_frame = animation_frame % animation_frame_limit
                 animation_counter = 0
 
-            pygame.draw.circle(screen, "purple", 
-                               pygame.Vector2(selected_node.x * square_size, 
-                                              selected_node.y * square_size),
-                                player_size + 5)
-            level_screen(lvl, screen, square_size, visited_nodes, node_font, node_size,
+            # pygame.draw.circle(screen, "purple", 
+            #                    pygame.Vector2(selected_node.x * square_size, 
+            #                                   selected_node.y * square_size),
+            #                     player_size + 5)
+            screen.blit(selector_image, 
+                        pygame.Vector2((selected_node.x * square_size) - (selector_image.get_size()[0]//2), 
+                                        (selected_node.y * square_size) - (selector_image.get_size()[1]//2)))
+            level_screen(lvl, screen, square_size, visited_nodes, node_font, pixel_scale,
                          points_font, points)
             display_player_node_data(lvl, player_node, screen, points_font)
             
             # move player
 
-            keys_pressed = pygame.key.get_pressed()
             # DONE: make code to move player in cardinal directions
             # DONE: make code to move the player diagonally
             sprite_image = pygame.image.load(current_animation[animation_frame])
@@ -447,13 +467,13 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
                                                 (destination_node.y -  player_node.y))
                     invert = False
                     if direction.x != 0:
-                        sprite_animation_file = "src/sprites/D_walk/"
+                        sprite_animation_file = "src/assets/sprites/D_walk/"
                         if direction.x < 0:
                             invert = True
                     if direction.y > 0 and abs(direction.y) > abs(direction.x):
-                        sprite_animation_file = "src/sprites/S_walk/"
+                        sprite_animation_file = "src/assets/sprites/S_walk/"
                     if direction.y < 0 and abs(direction.y) > abs(direction.x):
-                        sprite_animation_file = "src/sprites/W_walk/"
+                        sprite_animation_file = "src/assets/sprites/W_walk/"
                     
 
                     current_animation = []
@@ -479,7 +499,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
                             player_node = destination_node
                             current_position = pygame.Vector2(player_node.x, player_node.y)
                             moving = False
-                            sprite_animation_file = "src/sprites/idle/"
+                            sprite_animation_file = "src/assets/sprites/idle/"
                             animation_frame = 0
                             current_animation, animation_frame_limit = set_up_animation(sprite_animation_file)
 
@@ -493,10 +513,10 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
                                     if prizes_found == total_prizes:
                                         next_level = True
                                         lvl_counter += 1
-                                    current_animation, animation_frame_limit = set_up_animation("src/sprites/prize_sprite/")
+                                    current_animation, animation_frame_limit = set_up_animation("src/assets/sprites/prize_sprite/")
                                 elif destination_node.data == "trap":
                                     death_animation = True
-                                    current_animation, animation_frame_limit = set_up_animation("src/sprites/trap/")
+                                    current_animation, animation_frame_limit = set_up_animation("src/assets/sprites/trap/")
                                     animation_frame = 0
                                     #game_over = True
                 last_key_positions = keys_pressed
@@ -511,4 +531,5 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
 
     pygame.quit()
 
-run_game()
+#run_game()
+test_level(6)

@@ -68,6 +68,9 @@ class Graph:
                 if not found:
                     if self.nodes[this_node_id].data == data:
                         found = True
+            if len(nodes_at_distance_i) == 0:
+                found = True
+                i = -1
             if not found:
                 i += 1
         return i

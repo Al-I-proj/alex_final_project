@@ -1,4 +1,5 @@
 from graph import Graph, Node
+import random
 
 def level_1_graph():
     #DONE: create a level and create a structure by which coordinates can be manually assigned to the nodes
@@ -185,6 +186,195 @@ def level_5_graph():
 
     return lvl
 
+def random_graph(node_count: int, directional: bool, restart: bool = True):
+    lvl = Graph()
+    existing_coordinates = {}
+    all_x_values = []
+    x = random.randint(1, node_count//2)
+    y = random.randint(1, node_count//4)
+    lvl.add_node(Node("start", (x, y)))
+    prizes = max(1, node_count//10)
+    traps = max(1, node_count//10)
+    prize_count = 0
+    trap_count = 0
+
+    for _ in range(node_count - 1):
+        x = random.randint(1, node_count//2)
+        y = random.randint(1, node_count//4)
+        while x in existing_coordinates and y in existing_coordinates[x]:
+            x += 1
+            x = x % (node_count // 2)
+            y += 1
+            y = y % (node_count // 2)
+        if x in existing_coordinates:
+            existing_coordinates[x] += [y]
+        else:
+            existing_coordinates[x] = [y]
+        if x not in all_x_values:
+            all_x_values += [x]
+        #TODO: make code to randomly assign node type
+
+        lvl.add_node(Node(f"{x},{y}", (x,y)))
+
+    for this_x in all_x_values:
+        close_xs = []
+        close_x_distance = 1
+        if this_x in existing_coordinates:
+            if len(existing_coordinates[this_x]) > 1:
+                close_xs += [this_x]
+        while len(close_xs) < 1:
+            if this_x + 1 in existing_coordinates:
+                close_xs += [this_x + close_x_distance]
+            if this_x - 1 in existing_coordinates:
+                close_xs += [this_x - close_x_distance]
+            close_x_distance += 1
+
+        for this_y in existing_coordinates[this_x]:
+            this_node_id = f"{this_x},{this_y}"
+            pot_connections = []
+            close_y_distance = 1
+            while len(pot_connections) < 1:
+                for close_x in close_xs:
+                    for close_x_y in existing_coordinates[close_x]:
+                        if abs(close_x_y - this_y) <= close_y_distance:
+                            pot_connections += [(close_x, close_x_y)]
+            connection_count = random.randint(1, len(pot_connections))
+            for _ in range(connection_count):
+                i = random.randint(0, len(pot_connections) - 1)
+                random_node_id = f"{pot_connections[i][0]},{pot_connections[i][1]}"
+                repeat = False
+
+                if this_node_id in lvl.edges:
+                    if random_node_id in lvl.edges[this_node_id]:
+                        repeat = True
+                tested_i = []
+                while repeat and len(tested_i) <= len(pot_connections):
+                    tested_i += [i]
+                    i += 1
+                    i = i % len(pot_connections)
+                    random_node_id = f"{pot_connections[i][0]},{pot_connections[i][1]}"
+                    if random_node_id in lvl.edges[this_node_id]:
+                        repeat = True
+                if not repeat:
+                    connection_count -= 1
+                    if directional:
+                        lvl.add_edge(this_node_id, random_node_id)
+                    else:
+                        lvl.add_non_directional_edge(this_node_id, random_node_id)
+                    pot_connections.pop(i)
+
+    lvl, prize_indices = random_node_data_assignment(lvl, "prize", prizes)
+    
+    lvl = random_node_data_assignment(lvl, "trap", traps, prize_indices)[0]
+
+    while not is_path_to_all_prizes(lvl):
+        lvl = add_random_close_edges(lvl, all_x_values, existing_coordinates, directional, 1)
+    
+    return lvl
+
+
+    
+def add_random_close_edges(lvl, all_x_values, existing_coordinates, directional, connection_count):
+    for this_x in all_x_values:
+        close_xs = []
+        close_x_distance = 1
+        if this_x in existing_coordinates:
+            if len(existing_coordinates[this_x]) > 1:
+                close_xs += [this_x]
+        while len(close_xs) < 1:
+            if this_x + 1 in existing_coordinates:
+                close_xs += [this_x + close_x_distance]
+            if this_x - 1 in existing_coordinates:
+                close_xs += [this_x - close_x_distance]
+            close_x_distance += 1
+
+        for this_y in existing_coordinates[this_x]:
+            this_node_id = f"{this_x},{this_y}"
+            pot_connections = []
+            close_y_distance = 1
+            while len(pot_connections) < 1:
+                for close_x in close_xs:
+                    for close_x_y in existing_coordinates[close_x]:
+                        if abs(close_x_y - this_y) <= close_y_distance:
+                            pot_connections += [(close_x, close_x_y)]
+            connection_count = random.randint(1, len(pot_connections))
+            for _ in range(connection_count):
+                i = random.randint(0, len(pot_connections) - 1)
+                random_node_id = f"{pot_connections[i][0]},{pot_connections[i][1]}"
+                repeat = False
+
+                if this_node_id in lvl.edges:
+                    if random_node_id in lvl.edges[this_node_id]:
+                        repeat = True
+                tested_i = []
+                while repeat and len(tested_i) <= len(pot_connections):
+                    tested_i += [i]
+                    i += 1
+                    i = i % len(pot_connections)
+                    random_node_id = f"{pot_connections[i][0]},{pot_connections[i][1]}"
+                    if random_node_id in lvl.edges[this_node_id]:
+                        repeat = True
+                if not repeat:
+                    connection_count -= 1
+                    if directional:
+                        lvl.add_edge(this_node_id, random_node_id)
+                    else:
+                        lvl.add_non_directional_edge(this_node_id, random_node_id)
+                    pot_connections.pop(i)
+    return lvl
+
+def random_node_data_assignment(lvl, data, new_assignment_count, excluded = []):
+    random_indices = []
+    for _ in range(new_assignment_count):
+        random_node_index = random.randint(0, len(lvl.nodes_list)-1)
+        while random_node_index in random_indices or random_node_index in excluded:
+            random_node_index += 1
+            random_node_index = random_node_index % len(lvl.nodes_list)
+        random_indices += [random_node_index]
+    for i in random_indices:
+        lvl.nodes[lvl.nodes_list[i]].data = data
+    return lvl, random_indices
+
+
+def is_path_to_all_prizes(lvl):
+    visits = {}
+    return prize_path_recursive(lvl, "start", 0, visits)
+
+def prize_path_recursive(lvl: Graph, current_node_id, prize_count, visits: dict):
+    if "start" not in lvl.nodes:
+        return False
+    
+    if lvl.total_prizes < 1:
+        return False
+    
+    if prize_count == lvl.total_prizes:
+        return True
+    
+    if current_node_id in visits:
+        visits[current_node_id] += 1
+    else:
+        visits[current_node_id] = 1
+    if current_node_id in lvl.edges:
+        if visits[current_node_id] > len(lvl.edges[current_node_id]):
+            return False
+    else:
+        return False
+    
+    for child_id in lvl.edges[current_node_id]:
+        this_child_path = False
+        if lvl.nodes[child_id].data == "prize":
+            prize_count += 1
+
+        if lvl.nodes[child_id].data != "trap":
+            this_child_path = prize_path_recursive(lvl, child_id, prize_count, visits)
+        if this_child_path:
+            return True
+    
+    return False
+
+
+
+
 def make_level(level_num):
     if level_num == 1:
         lvl = level_1_graph()
@@ -201,4 +391,47 @@ def make_level(level_num):
 
     return lvl
 
+def test_prize_path_recursive():
+    
+    dead_end_graph = Graph()
+    
+    if is_path_to_all_prizes(dead_end_graph) == False:
+        print("Passed")
+    else:
+        print("Failed: empty graph")
 
+    dead_end_graph.add_node(Node("start", (0,0)))
+    dead_end_graph.add_node(Node("node 2", (0,0)))
+    dead_end_graph.add_edge("start", "node 2")
+
+    if is_path_to_all_prizes(dead_end_graph) == False:
+        print("Passed")
+    else:
+        print("Failed: no prize")
+
+    dead_end_graph.add_node(Node("trap", (0, 0), "trap"))
+    dead_end_graph.add_node(Node("prize", (0,0), "prize"))
+
+    dead_end_graph.add_edge("node 2", "trap")
+    dead_end_graph.add_edge("trap", "prize")
+
+    if is_path_to_all_prizes(dead_end_graph) == False:
+        print("Passed")
+    else:
+        print("Failed: prize blocked by trap")
+    
+    dead_end_graph.nodes["trap"].data = ""
+
+    if is_path_to_all_prizes(dead_end_graph) == True:
+        print("Passed")
+    else:
+        print("Failed: direct prize path (directional)")
+
+    dead_end_graph.add_node(Node("prize_2", (0,0), "prize"))
+    dead_end_graph.add_edge("start", "prize_2")
+    
+    if is_path_to_all_prizes(dead_end_graph) == False:
+        print("Passed")
+    else:
+        print("Failed: no singular path")
+    
