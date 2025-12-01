@@ -231,7 +231,7 @@ def set_up_animation(animation_directory_name):
     return (current_animation, animation_frame_limit)
 
     
-def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 10, level_limit = 10):
+def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, level_limit = 5):
     
     lvl.update_trap_and_prize_distances()
     
@@ -531,5 +531,5 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 10, le
 
     pygame.quit()
 
-#run_game()
-test_level(6)
+run_game()
+#test_level(6)
