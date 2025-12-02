@@ -159,18 +159,25 @@ def level_5_graph():
     lvl.add_node(Node("WWDW", (6, 6), "trap"))
     lvl.add_node(Node("WDWDW", (7, 6)))
 
-    lvl.add_non_directional_edge("WAWAW", "WAWA")
-    lvl.add_edge("WWA","WWAW")
-    lvl.add_edge("WAWAW", "WWW")
-    lvl.add_edge("WWW", "WDWDW")
-    lvl.add_edge("WWDW", "WWD")
-    lvl.add_non_directional_edge("WDWD", "WDWDW")
+    # lvl.add_non_directional_edge("WAWAW", "WAWA")
+    # lvl.add_edge("WWA","WWAW")
+    # lvl.add_edge("WWAW", "WWW")
+    # lvl.add_edge("WWD", "WWDW")
+    # lvl.add_edge("WWDW", "WWW")
+    # lvl.add_non_directional_edge("WDWD", "WDWDW")
+    lvl.add_edge("WWAW","WWA")
+    lvl.add_edge("WWAW","WWW")
+    lvl.add_edge("WWW","WWDW")
+    lvl.add_edge("WWD","WWDW")
+
 
     lvl.add_node(Node("WWAWW", (4, 7)))
     lvl.add_node(Node("WWDWW", (6, 7)))
 
+    lvl.add_non_directional_edge("WAWAW", "WAWA")
     lvl.add_non_directional_edge("WWAWW", "WWAW")
     lvl.add_non_directional_edge("WWDWW", "WWDW")
+    lvl.add_non_directional_edge("WDWDW", "WDWD")
 
     lvl.add_node(Node("WAWAWWW", (3, 8)))
     lvl.add_node(Node("WWWWWWW", (5, 8)))
