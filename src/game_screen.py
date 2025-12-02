@@ -255,7 +255,7 @@ def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, lev
         lvl.bottom = 1
         lvl.top = topmost
 
-    if (lvl.top - lvl.bottom) * 16 > (lvl.right - lvl.left) * 9:
+    if (lvl.top - lvl.bottom) > (lvl.right - lvl.left):
         lvl_scale = 1 / (1 + lvl.top - lvl.bottom)
     else:
         lvl_scale = 1 / (1 + lvl.right - lvl.left)
