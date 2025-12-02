@@ -22,17 +22,17 @@ def level_1_graph():
 
 def level_2_graph():
     lvl = Graph()
-    lvl.add_node(Node("start", (5,3)))
+    lvl.add_node(Node("start", (3,3)))
 
-    lvl.add_node(Node("-1,-1", (4,2)))
-    lvl.add_node(Node("1,-1", (6,2)))
+    lvl.add_node(Node("-1,-1", (2,2)))
+    lvl.add_node(Node("1,-1", (4,2)))
 
     lvl.add_non_directional_edge("start", "-1,-1")
     lvl.add_non_directional_edge("start", "1,-1")
 
-    lvl.add_node(Node("-2,-2", (3, 1), "trap"))
-    lvl.add_node(Node("0,-2", (5, 1), "prize"))
-    lvl.add_node(Node("2,-2", (7, 1), "prize"))
+    lvl.add_node(Node("-2,-2", (1, 1), "trap"))
+    lvl.add_node(Node("0,-2", (3, 1), "prize"))
+    lvl.add_node(Node("2,-2", (5, 1), "prize"))
 
     lvl.add_non_directional_edge("-1,-1", "-2,-2")
     lvl.add_non_directional_edge("-1,-1", "0,-2")
@@ -248,5 +248,3 @@ def test_prize_path_recursive():
         print("Passed")
     else:
         print("Failed: no singular path")
-    
-random_graph(12, False)
