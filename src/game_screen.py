@@ -177,12 +177,36 @@ def select_destination_node(lvl, left, right, up, down, player_node, selected_no
         return selected_node
 
 def display_player_node_data(lvl, player_node, screen, small_font):
+    """
+    Docstring for display_player_node_data
+    
+    :param lvl: graph used for this level
+    :param player_node: node the player is on
+    :param screen: screen to display on
+    :param small_font: font to display in
+
+    helper function which displays the data of the node the player is currently on
+    """
     prize_info = small_font.render(f"nearest prize: {player_node.prize_distance}", True, "green")
     trap_info = small_font.render(f"nearest trap: {player_node.trap_distance}", True, "red")
     screen.blit(prize_info, pygame.Vector2(1000, 150 + (prize_info.get_size()[1])))
     screen.blit(trap_info, pygame.Vector2(1000, 150 + (trap_info.get_size()[1] * 2)))
 
-def quick_sort(unordered_list: list, by_x = False, by_y = False):
+def quick_sort(unordered_list: list, by_x: bool = False, by_y: bool = False):
+    """
+    Docstring for quick_sort
+    
+    :param unordered_list: the unordered list
+    :type unordered_list: list
+    :param by_x: is this list to be sorted by its x coordinate
+    :type by_x: bool
+    :param by_y: is this list to be sorted by its y coordinate
+    :type by_y: bool
+
+    a quick sort function which can sort by x or y proximity of coordinates
+    in the event of equal distance along the target vector, it will prioritize the closest
+    coordinate along the other vector
+    """
     if len(unordered_list) <= 1:
         return unordered_list
     
@@ -219,11 +243,26 @@ def quick_sort(unordered_list: list, by_x = False, by_y = False):
     return quick_sort(less, by_x, by_y) + [pivot] + quick_sort(more, by_x, by_y)
     
 def test_level(level_num):
+    """
+    Docstring for test_level
+    
+    :param level_num: the level number
+
+    a function which applies run_game() to one level
+    """
     lvl = levels.make_level(level_num)
 
     run_game(lvl, level_num, level_num)
 
-def set_up_animation(animation_directory_name):
+def set_up_animation(animation_directory_name: str):
+    """
+    Docstring for set_up_animation
+    
+    :param animation_directory_name: the path to the directory as a string
+
+    sets up a list of paths to each frame of an animation
+    returns the list and the length of said list
+    """
     current_animation = []
     for frame in os.listdir(animation_directory_name):
         current_animation += [animation_directory_name + str(frame)]
@@ -232,7 +271,16 @@ def set_up_animation(animation_directory_name):
 
     
 def run_game(lvl = levels.level_1_graph(), lvl_counter = 1, final_level = 5, level_limit = 5):
+    """
+    Docstring for run_game
     
+    :param lvl: graph of the level
+    :param lvl_counter: level number
+    :param final_level: last level to be run before game over (included for level testing)
+    :param level_limit: number of levels which have level generating functions in levels.py
+
+    a function which displays and runs the playable game
+    """
     lvl.update_trap_and_prize_distances()
     
     if lvl.left > 1:
