@@ -6,11 +6,29 @@ from graph import Graph, Node
 import levels
 
 def new_key_press(key, last_key_positions, keys_pressed):
+    """
+    Docstring for new_key_press
+    
+    :param key: key to be checked
+    :param last_key_positions: last positions of all the keys
+    :param keys_pressed: current positions of all the keys
+
+    returns a bool for if a key has just been pressed
+    """
     if last_key_positions[key] != keys_pressed[key] and keys_pressed[key]:
         return True
     return False
 
 def new_key_lift(key, last_key_positions, keys_pressed):
+    """
+    Docstring for new_key_lift
+    
+    :param key: key to be checked
+    :param last_key_positions: last key positions
+    :param keys_pressed: current key positions
+
+    checks if a key has just been released
+    """
     if last_key_positions[key] != keys_pressed[key] and not keys_pressed[key]:
         return True
     return False
@@ -18,6 +36,21 @@ def new_key_lift(key, last_key_positions, keys_pressed):
 
 def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, pixel_scale,
                  points_font, points):
+    """
+    Docstring for level_screen
+    
+    :param lvl: graph of this level
+    :type lvl: Graph
+    :param screen: screen to be displayed on
+    :param square_size: size of the "squares" in the graph
+    :param visited_nodes: list of nodes which have been visited by the player
+    :param node_font: font to display node information
+    :param pixel_scale: size of the "pixels" for use with the pixel art
+    :param points_font: font to display the points information
+    :param points: number of collected prizes
+
+    set up the display for the current level
+    """
     # draw the edges
 
     #DONE: add something to indicate directionality of edges
@@ -114,6 +147,15 @@ def level_screen(lvl: Graph, screen, square_size, visited_nodes, node_font, pixe
         # move player
 
 def game_over_screen(screen, title_font, points_font):
+    """
+    Docstring for game_over_screen
+    
+    :param screen: screen to display on
+    :param title_font: large text font
+    :param points_font: small text font
+
+    set up the "game over" display
+    """
     text = title_font.render("GAME OVER", True, "red")
     center = ((screen.get_size()[0]//2) - (text.get_size()[0]//2), screen.get_size()[1]//2 - (text.get_size()[1]//2))
     screen.blit(text, pygame.Vector2(center[0],center[1] - 50))
@@ -125,6 +167,15 @@ def game_over_screen(screen, title_font, points_font):
     screen.blit(text, pygame.Vector2(center[0], center[1] + 100))
 
 def level_up_screen(screen, title_font, points_font):
+    """
+    Docstring for level_up_screen
+    
+    :param screen: screen to display to
+    :param title_font: large font
+    :param points_font: small font
+
+    set up the "level up" display
+    """
     text = title_font.render("LEVEL UP!", True, "green")
     center = ((screen.get_size()[0]//2) - (text.get_size()[0]//2), screen.get_size()[1]//2 - (text.get_size()[1]//2))
     screen.blit(text, pygame.Vector2(center[0],center[1] - 50))
@@ -132,9 +183,28 @@ def level_up_screen(screen, title_font, points_font):
     center = ((screen.get_size()[0]//2) - (text.get_size()[0]//2), screen.get_size()[1]//2 - (text.get_size()[1]//2))
     screen.blit(text, pygame.Vector2(center[0], center[1] + 50))
 
-def select_destination_node(lvl, left, right, up, down, player_node, selected_node):
-    # a selection function for destination nodes
+def select_destination_node(lvl: Graph, 
+                            left: bool, right: bool, up: bool, down: bool, 
+                            player_node, selected_node):
+    """
+    Docstring for select_destination_node
     
+    :param lvl: current level grpah
+    :type lvl: Graph
+    :param left: has the "left" key been clicked
+    :type left: bool
+    :param right: has the "right" key been clicked
+    :type right: bool
+    :param up: has the "up" key been clicked
+    :type up: bool
+    :param down: has the "down" key been clicked
+    :type down: bool
+    :param player_node: the node the player is on
+    :param selected_node: the node currently selected for possible travel
+
+    determines which node should be displayed as the selected node while player selects their destination
+    """
+
     if left != right or up != down:
         x_ordered = [[],[]]
         y_ordered = [[],[]]

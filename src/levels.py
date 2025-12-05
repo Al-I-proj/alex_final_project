@@ -193,7 +193,8 @@ def level_5_graph():
 
     return lvl
 
-
+def is_viable(lvl: Graph):
+    pass
 
 def make_level(level_num):
     if level_num == 1:
