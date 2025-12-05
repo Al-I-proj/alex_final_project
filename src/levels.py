@@ -193,8 +193,41 @@ def level_5_graph():
 
     return lvl
 
-def is_viable(lvl: Graph):
-    pass
+def is_path_to_all_prizes(lvl):
+    visits = {}
+    return prize_path_recursive(lvl, "start", 0, visits)
+
+def prize_path_recursive(lvl: Graph, current_node_id, prize_count, visits: dict):
+    if "start" not in lvl.nodes:
+        return False
+    
+    if lvl.total_prizes < 1:
+        return False
+    
+    if prize_count == lvl.total_prizes:
+        return True
+    
+    if current_node_id in visits:
+        visits[current_node_id] += 1
+    else:
+        visits[current_node_id] = 1
+    if current_node_id in lvl.edges:
+        if visits[current_node_id] > len(lvl.edges[current_node_id]):
+            return False
+    else:
+        return False
+    
+    for child_id in lvl.edges[current_node_id]:
+        this_child_path = False
+        if lvl.nodes[child_id].data == "prize":
+            prize_count += 1
+
+        if lvl.nodes[child_id].data != "trap":
+            this_child_path = prize_path_recursive(lvl, child_id, prize_count, visits)
+        if this_child_path:
+            return True
+    
+    return False
 
 def make_level(level_num):
     if level_num == 1:
